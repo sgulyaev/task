@@ -11,33 +11,11 @@ class IssueTrackerSpec {
     val tracker = IssueTracker()
 
     @Test
-    fun `should just add turnaround time in minutes to the start date if no overflows`() {
-        test(
-            startDate = monday,
-            turnaroundTime = 1.min,
-            expectedDueDate = monday.copy(minute = 1)
-        )
-    }
-
-
-    @Test
-    fun `should add hours if there is overflow in minutes`() {
-        test(
-            startDate = monday.copy(minute = 59),
-            turnaroundTime = 1.min,
-            expectedDueDate = monday.copy(hour = 10, minute = 0)
-        )
-
+    fun `should just add turnaround time in hours to the start date if no overflows`() {
         test(
             startDate = monday,
             turnaroundTime = 1.hour,
-            expectedDueDate = monday.copy(hour = 10, minute = 0)
-        )
-
-        test(
-            startDate = monday.copy(minute = 55),
-            turnaroundTime = 1.hour + 7.min,
-            expectedDueDate = monday.copy(hour = 11, minute = 2)
+            expectedDueDate = monday.copy(hour = 10)
         )
     }
 
@@ -45,14 +23,14 @@ class IssueTrackerSpec {
     fun `should add day if overflow in hours, working day starts at 9-00 and ends at 17-00`() {
         test(
             startDate = monday.copy(hour = 16, minute = 59),
-            turnaroundTime = 1.min,
-            expectedDueDate = tuesday.copy(hour = 9, minute = 0)
+            turnaroundTime = 1.hour,
+            expectedDueDate = tuesday.copy(hour = 9, minute = 59)
         )
 
         test(
             startDate = monday.copy(hour = 9, minute = 7),
-            turnaroundTime = 1.workingDay + 1.hour + 5.min,
-            expectedDueDate = tuesday.copy(hour = 10, minute = 12)
+            turnaroundTime = 1.workingDay + 1.hour,
+            expectedDueDate = tuesday.copy(hour = 10, minute = 7)
         )
 
         test(
@@ -70,7 +48,6 @@ class IssueTrackerSpec {
     }
 
 
-    private val Int.workingDay: Int get() = this * 60 * 8
-    private val Int.hour: Int get() = this * 60
-    private val Int.min: Int get() = this
+    private val Int.workingDay: Int get() = this * 8
+    private val Int.hour: Int get() = this
 }
