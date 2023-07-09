@@ -2,10 +2,18 @@ package app
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.days
 
 private val monday = Date(year = 2023, month = 7, day = 10, hour = 9, minute = 0)
 private val tuesday = Date(year = 2023, month = 7, day = 11, hour = 9, minute = 0)
 private val wednesday = Date(year = 2023, month = 7, day = 12, hour = 9, minute = 0)
+private val thursday = Date(year = 2023, month = 7, day = 13, hour = 9, minute = 0)
+private val friday = Date(year = 2023, month = 7, day = 14, hour = 9, minute = 0)
+private val saturday = Date(year = 2023, month = 7, day = 15, hour = 9, minute = 0)
+private val sunday = Date(year = 2023, month = 7, day = 16, hour = 9, minute = 0)
+
+private val Date.nextWeek: Date get() = this.copy(day = day + 7)
+
 
 class IssueTrackerSpec {
     val tracker = IssueTracker()
@@ -37,6 +45,27 @@ class IssueTrackerSpec {
             startDate = monday.copy(hour = 9, minute = 7),
             turnaroundTime = 2.workingDay,
             expectedDueDate = wednesday.copy(hour = 9, minute = 7)
+        )
+    }
+
+    @Test
+    fun `should skip saturdays and sundays as they are not working days`() {
+        test(
+            startDate = friday.copy(hour = 16),
+            turnaroundTime = 1.hour,
+            expectedDueDate = monday.nextWeek
+        )
+
+        test(
+            startDate = monday,
+            turnaroundTime = 7.workingDay,
+            expectedDueDate = wednesday.nextWeek
+        )
+
+        test(
+            startDate = thursday.copy(hour = 10),
+            turnaroundTime = 3.workingDay + 2.hour,
+            expectedDueDate = tuesday.nextWeek.copy(hour = 12)
         )
     }
 
