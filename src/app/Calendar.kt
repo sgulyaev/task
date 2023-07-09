@@ -1,10 +1,16 @@
 package app
 
 import app.Month.*
+import kotlin.math.min
 
 class Calendar {
+    private val DAYS_PER_WEEK = 7
+    private val MONDAY = Date(year = 2023, month = DAYS_PER_WEEK, day = 10, hour = 0, minute = 0)
+
     fun dayOfWeek(date: Date): DayOfWeek {
-        return DayOfWeek.entries[(date.day - 10) % 7]
+        val days = daysBetween(MONDAY, date)
+        val dayOfWeekIndex = if (days % DAYS_PER_WEEK >= 0) days % DAYS_PER_WEEK else days % DAYS_PER_WEEK + DAYS_PER_WEEK
+        return DayOfWeek.entries[dayOfWeekIndex]
     }
 
     fun advance(date: Date, days: Int): Date {
@@ -27,9 +33,37 @@ class Calendar {
         return date.copy(year = year, month = month.toInt(), day = day)
     }
 
+    private fun daysBetween(startDate: Date, endDate: Date): Int {
+        val minYear = min(startDate.year, endDate.year)
+        if (startDate < endDate) return daysFromYearStart(endDate, minYear) - daysFromYearStart(startDate, minYear)
+        else return daysFromYearStart(startDate, minYear) - daysFromYearStart(endDate, minYear)
+    }
+
+    private fun daysFromYearStart(date: Date, year: Int): Int {
+        var year = year
+        var month = January
+        var countDays = 0
+        while (year < date.year) {
+            countDays += daysInYear(year)
+            year += 1
+        }
+        while (month < Month.fromInt(date.month)) {
+            countDays += daysInMonth(month, year)
+            month = month.next()
+        }
+
+        countDays += date.day - 1
+        return countDays
+    }
+
+
     private fun daysInMonth(month: Month, year: Int): Int {
         if (month == February && isLeapYear(year)) return month.days + 1
         else return month.days
+    }
+
+    private fun daysInYear(year: Int): Int {
+        if (isLeapYear(year)) return 366 else return 365
     }
 
     private fun isLeapYear(year: Int): Boolean {
@@ -37,6 +71,13 @@ class Calendar {
         if (year % 100 == 0) return false
         return year % 4 == 0
     }
+
+    companion object {
+        private val dateComparator =
+            compareBy<Date> { it.year }.thenBy { it.month }.thenBy { it.day }.thenBy { it.hour }.thenBy { it.minute }
+    }
+
+    private operator fun Date.compareTo(other: Date): Int = dateComparator.compare(this, other)
 }
 
 enum class DayOfWeek {
