@@ -1,16 +1,17 @@
 package app
 
 import app.DayOfWeek.*
+import app.Month.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CalendarDayOfWeekSpec {
     val calendar = Calendar()
 
-    val monday = Date(year = 2023, month = 7, day = 10, hour = 0, minute = 0)
-    val mondayWeekBefore = Date(year = 2023, month = 7, day = 3, hour = 0, minute = 0)
-    val mondayInPast = Date(year = 1923, month = 2, day = 26, hour = 0, minute = 0)
-    val mondayInFuture = Date(year = 3078, month = 3, day = 4, hour = 0, minute = 0)
+    val monday = Date(year = 2023, month = July, day = 10, hour = 0, minute = 0)
+    val mondayWeekBefore = Date(year = 2023, month = July, day = 3, hour = 0, minute = 0)
+    val mondayInPast = Date(year = 1923, month = February, day = 26, hour = 0, minute = 0)
+    val mondayInFuture = Date(year = 3078, month = March, day = 4, hour = 0, minute = 0)
 
 
     @Test

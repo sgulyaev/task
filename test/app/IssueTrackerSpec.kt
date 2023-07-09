@@ -1,17 +1,18 @@
 package app
 
+import app.Month.*
 import org.junit.jupiter.api.assertThrows
 import java.lang.IllegalArgumentException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-private val monday = Date(year = 2023, month = 7, day = 10, hour = 9, minute = 0)
-private val tuesday = Date(year = 2023, month = 7, day = 11, hour = 9, minute = 0)
-private val wednesday = Date(year = 2023, month = 7, day = 12, hour = 9, minute = 0)
-private val thursday = Date(year = 2023, month = 7, day = 13, hour = 9, minute = 0)
-private val friday = Date(year = 2023, month = 7, day = 14, hour = 9, minute = 0)
-private val saturday = Date(year = 2023, month = 7, day = 15, hour = 9, minute = 0)
-private val sunday = Date(year = 2023, month = 7, day = 16, hour = 9, minute = 0)
+private val monday = Date(year = 2023, month = July, day = 10, hour = 9, minute = 0)
+private val tuesday = Date(year = 2023, month = July, day = 11, hour = 9, minute = 0)
+private val wednesday = Date(year = 2023, month = July, day = 12, hour = 9, minute = 0)
+private val thursday = Date(year = 2023, month = July, day = 13, hour = 9, minute = 0)
+private val friday = Date(year = 2023, month = July, day = 14, hour = 9, minute = 0)
+private val saturday = Date(year = 2023, month = July, day = 15, hour = 9, minute = 0)
+private val sunday = Date(year = 2023, month = July, day = 16, hour = 9, minute = 0)
 
 private val Date.nextWeek: Date get() = this.copy(day = day + 7)
 
@@ -73,18 +74,18 @@ class IssueTrackerSpec {
     @Test
     fun `big test from monday, 260 working days which will resualt in 364 calendar days`() {
         test(
-            startDate = Date(year = 2023, month = 1, day = 2, hour = 12, minute = 12),
+            startDate = Date(year = 2023, month = January, day = 2, hour = 12, minute = 12),
             turnaroundTime = 260.workingDay,
-            expectedDueDate = Date(year = 2024, month = 1, day = 1, hour = 12, minute = 12)
+            expectedDueDate = Date(year = 2024, month = January, day = 1, hour = 12, minute = 12)
         )
     }
 
     @Test
     fun `big test from monday, 520 working days which will resualt in (364 times 2) calendar days, also one of the year is leap year`() {
         test(
-            startDate = Date(year = 2023, month = 1, day = 2, hour = 12, minute = 12),
+            startDate = Date(year = 2023, month = January, day = 2, hour = 12, minute = 12),
             turnaroundTime = 520.workingDay,
-            expectedDueDate = Date(year = 2024, month = 12, day = 30, hour = 12, minute = 12)
+            expectedDueDate = Date(year = 2024, month = December, day = 30, hour = 12, minute = 12)
         )
     }
 

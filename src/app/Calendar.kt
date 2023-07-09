@@ -5,7 +5,7 @@ import kotlin.math.min
 
 class Calendar {
     private val DAYS_PER_WEEK = 7
-    private val MONDAY = Date(year = 2023, month = 7, day = 10, hour = 0, minute = 0)
+    private val MONDAY = Date(year = 2023, month = July, day = 10, hour = 0, minute = 0)
 
     fun dayOfWeek(date: Date): DayOfWeek {
         val days = daysBetween(MONDAY, date)
@@ -14,7 +14,7 @@ class Calendar {
     }
 
     fun advance(date: Date, days: Int): Date {
-        var month = Month.fromInt(date.month)
+        var month = date.month
         var year = date.year
         var day = date.day
         var needDays = days
@@ -30,7 +30,7 @@ class Calendar {
                 needDays = 0
             }
         }
-        return date.copy(year = year, month = month.toInt(), day = day)
+        return date.copy(year = year, month = month, day = day)
     }
 
     private fun daysBetween(startDate: Date, endDate: Date): Int {
@@ -47,7 +47,7 @@ class Calendar {
             countDays += daysInYear(year)
             year += 1
         }
-        while (month < Month.fromInt(date.month)) {
+        while (month < date.month) {
             countDays += daysInMonth(month, year)
             month = month.next()
         }
@@ -91,12 +91,6 @@ enum class Month(val days: Int) {
     October(31), November(30), December(31);
 
     fun next(): Month = entries[(this.ordinal + 1) % entries.size]
-
-    fun toInt(): Int = this.ordinal + 1
-
-    companion object {
-        fun fromInt(num: Int): Month = entries[num - 1]
-    }
 }
 
-data class Date(val year: Int, val month: Int, val day: Int, val hour: Int, val minute: Int)
+data class Date(val year: Int, val month: Month, val day: Int, val hour: Int, val minute: Int)
