@@ -2,6 +2,10 @@ package app
 
 class IssueTracker {
     fun calculateDueDate(date: Date, turnaroundTime: Int): Date {
-        return date.copy(minute = date.minute + turnaroundTime)
+        val minutes = date.minute + turnaroundTime
+        return date.copy(
+            minute = minutes % 60,
+            hour = date.hour + minutes / 60
+        )
     }
 }
