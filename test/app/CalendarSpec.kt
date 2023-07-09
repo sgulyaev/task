@@ -34,7 +34,22 @@ class CalendarSpec {
         test(date.copy(month = 12, day = 31), 1, date.copy(year = 2024, month = 1, day = 1))
     }
 
+    @Test
+    fun `should work properly in Febuary in leap years`() {
+        test(date.copy(year = 2024, month = 2, day = 28), 1, date.copy(year = 2024, month = 2, day = 29))
+        test(date.copy(year = 2024, month = 2, day = 29), 1, date.copy(year = 2024, month = 3, day = 1))
+        test(date.copy(year = 2028, month = 2, day = 29), 1, date.copy(year = 2028, month = 3, day = 1))
+        test(date.copy(year = 2400, month = 2, day = 29), 1, date.copy(year = 2400, month = 3, day = 1))
+        test(date.copy(year = 2800, month = 2, day = 29), 1, date.copy(year = 2800, month = 3, day = 1))
+    }
 
+    @Test
+    fun `should work properly in Febuary in not leap years`() {
+        test(date.copy(year = 2001, month = 2, day = 28), 1, date.copy(year = 2001, month = 3, day = 1))
+        test(date.copy(year = 2100, month = 2, day = 28), 1, date.copy(year = 2100, month = 3, day = 1))
+        test(date.copy(year = 2200, month = 2, day = 28), 1, date.copy(year = 2200, month = 3, day = 1))
+        test(date.copy(year = 2300, month = 2, day = 28), 1, date.copy(year = 2300, month = 3, day = 1))
+    }
 
 
     fun test(startDate: Date, advanceAmountInDays: Int, expectedEndDate: Date) {
