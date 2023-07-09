@@ -14,44 +14,55 @@ class Calendar {
     }
 
     fun advance(date: Date, days: Int): Date {
-        var month = date.month
-        var year = date.year
-        var day = date.day
         var needDays = days
+        var trackDate = date
         while (needDays != 0) {
-            val availableDaysInMonth = daysInMonth(month, year) - day + 1
+            val availableDaysInMonth = daysInMonth(trackDate.month, trackDate.year) - trackDate.day + 1
             if (needDays >= availableDaysInMonth) {
+                trackDate = advanceToStartOfNextMonth(trackDate)
                 needDays -= availableDaysInMonth
-                day = 1
-                month = month.next()
-                if (month == January) year += 1
             } else {
-                day += needDays
+                trackDate = advanceInsideOneMonth(trackDate, needDays)
                 needDays = 0
             }
         }
-        return date.copy(year = year, month = month, day = day)
+        return trackDate.copy(hour = date.hour, minute = date.minute)
+    }
+
+    private fun advanceInsideOneMonth(trackDate: Date, days: Int): Date {
+        return trackDate.copy(day = trackDate.day + days)
+    }
+
+    private fun advanceToStartOfNextMonth(date: Date): Date {
+        return Date(
+            year = if (date.month == December) date.year + 1 else date.year,
+            month = date.month.next(),
+            day = 1,
+            hour = 0,
+            minute = 0
+        )
+    }
+
+    private fun advanceToStartOfNextYear(date: Date): Date {
+        return Date(year = date.year + 1, month = January, day = 1, hour = 0, minute = 0)
     }
 
     private fun daysBetween(startDate: Date, endDate: Date): Int {
         val minYear = min(startDate.year, endDate.year)
-        if (startDate < endDate) return daysFromYearStart(endDate, minYear) - daysFromYearStart(startDate, minYear)
-        else return daysFromYearStart(startDate, minYear) - daysFromYearStart(endDate, minYear)
+        return daysFromYearStart(endDate, minYear) - daysFromYearStart(startDate, minYear)
     }
 
     private fun daysFromYearStart(date: Date, year: Int): Int {
-        var year = year
-        var month = January
         var countDays = 0
-        while (year < date.year) {
-            countDays += daysInYear(year)
-            year += 1
+        var trackDate = Date(year = year, month = January, day = 1, hour = 0, minute = 0)
+        while (trackDate.year < date.year) {
+            countDays += daysInYear(trackDate.year)
+            trackDate = advanceToStartOfNextYear(trackDate)
         }
-        while (month < date.month) {
-            countDays += daysInMonth(month, year)
-            month = month.next()
+        while (trackDate.month < date.month) {
+            countDays += daysInMonth(trackDate.month, trackDate.year)
+            trackDate = advanceToStartOfNextMonth(trackDate)
         }
-
         countDays += date.day - 1
         return countDays
     }
@@ -71,13 +82,6 @@ class Calendar {
         if (year % 100 == 0) return false
         return year % 4 == 0
     }
-
-    companion object {
-        private val dateComparator =
-            compareBy<Date> { it.year }.thenBy { it.month }.thenBy { it.day }.thenBy { it.hour }.thenBy { it.minute }
-    }
-
-    private operator fun Date.compareTo(other: Date): Int = dateComparator.compare(this, other)
 }
 
 enum class DayOfWeek {
