@@ -8,16 +8,23 @@ class Calendar {
     }
 
     fun advance(date: Date, days: Int): Date {
-        val daysFromMonthStart = date.day + days
-
-        val month = entries[date.month - 1]
-        val year = date.year
-        if (daysFromMonthStart - 1 == daysInMonth(month, year)) {
-            if (month != December) return date.copy(month = date.month + 1, day = 1)
-            else return date.copy(year = date.year + 1, month = 1, day = 1)
+        var month = Month.fromInt(date.month)
+        var year = date.year
+        var day = date.day
+        var needDays = days
+        while (needDays != 0) {
+            val availableDaysInMonth = daysInMonth(month, year) - day + 1
+            if (needDays >= availableDaysInMonth) {
+                needDays -= availableDaysInMonth
+                day = 1
+                month = month.next()
+                if (month == January) year += 1
+            } else {
+                day += needDays
+                needDays = 0
+            }
         }
-
-        return date.copy(day = date.day + days)
+        return date.copy(year = year, month = month.toInt(), day = day)
     }
 
     private fun daysInMonth(month: Month, year: Int): Int {
@@ -40,6 +47,15 @@ enum class Month(val days: Int) {
     January(31), February(28), March(31),
     April(30), May(31), June(30),
     July(31), August(31), September(30),
-    October(31), November(30), December(31)
+    October(31), November(30), December(31);
 
+    fun next(): Month = entries[(this.ordinal + 1) % entries.size]
+
+    fun toInt(): Int = this.ordinal + 1
+
+    companion object {
+        fun fromInt(num: Int): Month = entries[num - 1]
+    }
 }
+
+data class Date(val year: Int, val month: Int, val day: Int, val hour: Int, val minute: Int)

@@ -51,6 +51,21 @@ class CalendarSpec {
         test(date.copy(year = 2300, month = 2, day = 28), 1, date.copy(year = 2300, month = 3, day = 1))
     }
 
+    @Test
+    fun `should work properly with multiple months and years changes`() {
+        test(
+            date.copy(year = 2023, month = 1, day = 5),
+            31 + 28 + 31 + 30 + 7,
+            date.copy(year = 2023, month = 5, day = 12)
+        )
+
+        test(
+            date.copy(year = 2023, month = 1, day = 5),
+            365 + 366 + 365 + 365 + 365 + 366 + 2,
+            date.copy(year = 2029, month = 1, day = 7)
+        )
+    }
+
 
     fun test(startDate: Date, advanceAmountInDays: Int, expectedEndDate: Date) {
         assertEquals(expectedEndDate, calendar.advance(startDate, advanceAmountInDays))
