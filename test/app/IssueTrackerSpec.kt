@@ -1,8 +1,9 @@
 package app
 
+import org.junit.jupiter.api.assertThrows
+import java.lang.IllegalArgumentException
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.Duration.Companion.days
 
 private val monday = Date(year = 2023, month = 7, day = 10, hour = 9, minute = 0)
 private val tuesday = Date(year = 2023, month = 7, day = 11, hour = 9, minute = 0)
@@ -87,6 +88,23 @@ class IssueTrackerSpec {
         )
     }
 
+    @Test
+    fun `should throw exception if turnaround time is not positive`() {
+        assertThrows<IllegalArgumentException> { tracker.calculateDueDate(monday, 0) }
+        assertThrows<IllegalArgumentException> { tracker.calculateDueDate(monday, -10) }
+    }
+
+    @Test
+    fun `should throw exception if submit date is not working day`() {
+        assertThrows<IllegalArgumentException> { tracker.calculateDueDate(saturday, 1) }
+        assertThrows<IllegalArgumentException> { tracker.calculateDueDate(sunday, 1) }
+    }
+
+    @Test
+    fun `should throw exception if submit date is not in working hours`() {
+        assertThrows<IllegalArgumentException> { tracker.calculateDueDate(monday.copy(hour = 8), 1) }
+        assertThrows<IllegalArgumentException> { tracker.calculateDueDate(monday.copy(hour = 17), 1) }
+    }
 
     private fun test(startDate: Date, turnaroundTime: Int, expectedDueDate: Date) {
         assertEquals(
