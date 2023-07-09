@@ -10,29 +10,41 @@ class IssueTrackerSpec {
 
     @Test
     fun `should just add turnaround time in minutes to the start date if no overflows`() {
-        assertEquals(
-            actual = tracker.calculateDueDate(monday, 1),
-            expected = monday.copy(minute = 1)
+        test(
+            startDate = monday,
+            turnaroundTime = 1,
+            expectedDueDate = monday.copy(minute = 1)
         )
     }
 
 
     @Test
     fun `should add hours if there is overflow in minutes`() {
-        assertEquals(
-            actual = tracker.calculateDueDate(monday.copy(minute = 59), 1),
-            expected = monday.copy(hour = 10, minute = 0)
+        test(
+            startDate = monday.copy(minute = 59),
+            turnaroundTime = 1,
+            expectedDueDate = monday.copy(hour = 10, minute = 0)
         )
 
-        assertEquals(
-            actual = tracker.calculateDueDate(monday, 60),
-            expected = monday.copy(hour = 10, minute = 0)
+        test(
+            startDate = monday,
+            turnaroundTime = 60,
+            expectedDueDate = monday.copy(hour = 10, minute = 0)
         )
 
-        assertEquals(
-            actual = tracker.calculateDueDate(monday.copy(minute = 55), 67),
-            expected = monday.copy(hour = 11, minute = 2)
+        test(
+            startDate = monday.copy(minute = 55),
+            turnaroundTime = 67,
+            expectedDueDate = monday.copy(hour = 11, minute = 2)
         )
     }
+
+    private fun test(startDate: Date, turnaroundTime: Int, expectedDueDate: Date) {
+        assertEquals(
+            actual = tracker.calculateDueDate(startDate, turnaroundTime),
+            expected = expectedDueDate
+        )
+    }
+
 
 }
