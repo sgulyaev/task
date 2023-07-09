@@ -5,7 +5,7 @@ import kotlin.math.min
 
 class Calendar {
     private val DAYS_PER_WEEK = 7
-    private val MONDAY = Date(year = 2023, month = DAYS_PER_WEEK, day = 10, hour = 0, minute = 0)
+    private val MONDAY = Date(year = 2023, month = 7, day = 10, hour = 0, minute = 0)
 
     fun dayOfWeek(date: Date): DayOfWeek {
         val days = daysBetween(MONDAY, date)

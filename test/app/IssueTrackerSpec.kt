@@ -69,6 +69,25 @@ class IssueTrackerSpec {
         )
     }
 
+    @Test
+    fun `big test from monday, 260 working days which will resualt in 364 calendar days`() {
+        test(
+            startDate = Date(year = 2023, month = 1, day = 2, hour = 12, minute = 12),
+            turnaroundTime = 260.workingDay,
+            expectedDueDate = Date(year = 2024, month = 1, day = 1, hour = 12, minute = 12)
+        )
+    }
+
+    @Test
+    fun `big test from monday, 520 working days which will resualt in (364 times 2) calendar days, also one of the year is leap year`() {
+        test(
+            startDate = Date(year = 2023, month = 1, day = 2, hour = 12, minute = 12),
+            turnaroundTime = 520.workingDay,
+            expectedDueDate = Date(year = 2024, month = 12, day = 30, hour = 12, minute = 12)
+        )
+    }
+
+
     private fun test(startDate: Date, turnaroundTime: Int, expectedDueDate: Date) {
         assertEquals(
             actual = tracker.calculateDueDate(startDate, turnaroundTime),
